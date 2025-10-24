@@ -147,10 +147,33 @@ class StateGame extends StateHandler<Game> {
         const audioBGM = viewer.addNode(AudioComponent);
         const audioEffect = viewer.addNode(AudioComponent);
 
+        // 优化: 音频懒加载 - 只在需要时才加载,减少首屏加载时间
+        let bgmLoaded = false;
+        let effectsLoaded = false;
+
+        const loadBGM = () => {
+            if (!bgmLoaded) {
+                bgmLoaded = true;
+                AssetManager.Load({ url: "/Genshin/BGM.mp3" });
+            }
+        };
+
+        const loadEffects = () => {
+            if (!effectsLoaded) {
+                effectsLoaded = true;
+                AssetManager.Load({ url: "/Genshin/Genshin Impact [Duang].mp3" });
+                AssetManager.Load({ url: "/Genshin/Genshin Impact [DoorThrough].mp3" });
+                AssetManager.Load({ url: "/Genshin/Genshin Impact [DoorComeout].mp3" });
+            }
+        };
+
         gameManager.on("canvas-click", () => {
+            loadBGM();
             audioBGM.play({ url: "/Genshin/BGM.mp3", loop: true });
         })
         gameManager.on("button-start-click", () => {
+            loadBGM();
+            loadEffects();
             audioBGM.play({ url: "/Genshin/BGM.mp3", loop: true });
             audioEffect.play({ url: "/Genshin/Genshin Impact [Duang].mp3", force: true });
         })
@@ -188,7 +211,5 @@ class StateGame extends StateHandler<Game> {
     }
 }
 
-AssetManager.Load({ url: "/Genshin/BGM.mp3" });
-AssetManager.Load({ url: "/Genshin/Genshin Impact [Duang].mp3" });
-AssetManager.Load({ url: "/Genshin/Genshin Impact [DoorThrough].mp3" });
-AssetManager.Load({ url: "/Genshin/Genshin Impact [DoorComeout].mp3" });
+// 音频文件改为懒加载,已移到 _initAudios 方法中按需加载
+// 这样可以减少首屏加载时间,提升用户体验

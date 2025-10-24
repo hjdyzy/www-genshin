@@ -5,13 +5,19 @@ class TaskManager {
     private _taskFinished: number = 0;
     private _resolve: Promise<void> = Promise.resolve();
     private _progress: number = 0;
+    private _currentTaskName: string = "";
 
     public get progress() {
         return this._progress;
     }
 
+    public get currentTaskName() {
+        return this._currentTaskName;
+    }
+
     public task(handle: Function | Promise<any>, { name = "", weight = 1 } = {}) {
         this._regist(weight);
+        this._currentTaskName = name; // 更新当前任务名称
         return this._resolve
             .then(() => typeof handle === "function" ? handle() : handle)
             .then(() => this._finish(weight, name))
@@ -25,6 +31,7 @@ class TaskManager {
         this._taskCount = 0;
         this._taskFinished = 0;
         this._progress = 0;
+        this._currentTaskName = "";
     }
 
     private _finish(w: number, name: string) {
@@ -49,6 +56,10 @@ class GameManager extends EventEmitter {
 
     public get progress() {
         return this.taskManger.progress;
+    }
+
+    public get currentTaskName() {
+        return this.taskManger.currentTaskName;
     }
 
     public restart() {

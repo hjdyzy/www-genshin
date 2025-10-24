@@ -8,6 +8,7 @@ export function Preloader() {
   const progressRef = useRef();
   const [visible, setVisible] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [currentTask, setCurrentTask] = useState("");
 
   useEffect(() => {
     if (progress >= 1) {
@@ -22,6 +23,8 @@ export function Preloader() {
     if (t === 0) return;
     if (t > 0.99) t = 1;
     setProgress(t);
+    // 更新当前加载的资源名称
+    setCurrentTask(gameManager.currentTaskName);
   }, [progress]);
 
   return (
@@ -34,7 +37,9 @@ export function Preloader() {
           </div>
           <div className="ball" style={{ left: "-2vmin" }}></div>
           <div className="ball" style={{ left: "40.8vmin", top: "-2.4vmin" }}></div>
-          <div style={{ paddingTop: "1vmin", fontSize: "1.4vmin" }}>为了您更好的体验，请在电脑端打开</div>
+          <div style={{ paddingTop: "1vmin", fontSize: "1.4vmin" }}>
+            {currentTask ? `正在加载: ${currentTask}` : "为了您更好的体验，请在电脑端打开"}
+          </div>
         </div>
       </div>
     </div>
