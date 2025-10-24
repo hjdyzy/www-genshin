@@ -52,8 +52,9 @@ class GameManager extends EventEmitter {
     }
 
     public restart() {
-        // location.reload();
-        window.location.href = 'https://ys.999970.xyz'
+        // 优先使用环境变量配置的 URL,如果没有配置则使用默认值
+        const restartUrl = import.meta.env.VITE_RESTART_URL || 'https://ys.mihoyo.com/cloud/#/';
+        window.location.href = restartUrl;
     }
     public task(handle: Function | Promise<any>, props = {}) {
         return this.taskManger.task(handle, props);
